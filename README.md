@@ -1,5 +1,5 @@
 # <img src="https://github.com/OwnYourData/tutorial/raw/master/assets/dev.png" width="92"> Tutorial
-In diesem Tutorial wird der Zugriff auf den OwnYourData Datentresor für verschiedene Programmiersprachen vorgestellt.
+In diesem Tutorial wird der Zugriff auf den OwnYourData Datentresor für verschiedene Programmiersprachen vorgestellt. Öffne den jeweiligen Ordner um zum Tutorial der gleinamigen Programmiersprache zu gelangen.
 
 &nbsp;    
 
