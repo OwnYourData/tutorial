@@ -1,4 +1,4 @@
-# last update: 2016-07-27
+# last update: 2017-09-10
 =begin
 Manifest für Beispiel App (encodieren zB mit https://www.base64encode.org/)
 {
@@ -77,6 +77,7 @@ end
 
 # Lese und CRUD Operationen für ein Plugin (App) ==========
 # Daten aus PIA lesen
+# Daten aus PIA lesen
 def readItems(app, repo_url)
   if app.nil? | app == ""
       nil
@@ -84,13 +85,25 @@ def readItems(app, repo_url)
       headers = defaultHeaders(app["token"])
       url_data = repo_url + '?size=2000'
       response = HTTParty.get(url_data,
-                              headers: headers).parsed_response
-      if response.nil? or 
-         response == "" or
-         response.include?("error")
+                              headers: headers)
+      response_parsed = response.parsed_response
+      if response_parsed.nil? or 
+         response_parsed == "" or
+         response_parsed.include?("error")
           nil
       else
-          response
+          recs = response.headers["x-total-count"].to_i
+          if recs > 2000
+              (1..(recs/2000.0).floor).each_with_index do |page|
+                  url_data = repo_url + '?page=' + page.to_s + '&size=2000'
+                  subresp = HTTParty.get(url_data,
+                                         headers: headers).parsed_response
+                  response_parsed = response_parsed + subresp
+              end
+              response_parsed
+          else
+              response_parsed
+          end
       end
   end
 end
@@ -122,6 +135,16 @@ def deleteItem(app, repo_url, id)
   response = HTTParty.delete(url,
                              headers: headers)
   response
+end
+
+# alle Daten einer Liste (Repo) löschen
+def deleteRepo(app, repo_url)
+  allItems = readItems(app, repo_url)
+  if !allItems.nil?
+    allItems.each do |item|
+      deleteItem(app, repo_url, item["id"])
+    end
+  end
 end
 
 # Beispiel Code ===========================================
