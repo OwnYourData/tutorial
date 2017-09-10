@@ -77,7 +77,6 @@ end
 
 # Lese und CRUD Operationen für ein Plugin (App) ==========
 # Daten aus PIA lesen
-# Daten aus PIA lesen
 def readItems(app, repo_url)
   if app.nil? | app == ""
       nil
