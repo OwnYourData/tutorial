@@ -33,7 +33,7 @@ export APP_KEY=eu.ownyourdata.tutorial
 export APP_SECRET=l1InCBVMY0o31CJDcJKo # !!!update
 
 # get token
-export TOKEN=`curl $APP_KEY:$APP_SECRET@${PIA_URL:7:100}/oauth/token -d grant_type=client_credentials | jq -r '.access_token'`
+export TOKEN=`curl $APP_KEY:$APP_SECRET@${PIA_URL#*//}/oauth/token -d grant_type=client_credentials | jq -r '.access_token'`
 value=$(<tmp.txt)
 
 # write data - simple JSON
