@@ -1,0 +1,78 @@
+erzeuge verschlüsselte Nachricht in R und entschlüssle in Ruby
+
+in R:
+library(sodium)
+keyStr <- 'secret'
+unknown_private_key <- sha256(charToRaw(keyStr))
+public_key <- pubkey(unknown_private_key)
+auth_private_key <- sha256(charToRaw('auth'))
+nonce <- random(24)
+message <- "hello world"
+msg <- charToRaw(message)
+cipher <- auth_encrypt(msg, auth_private_key, public_key, nonce)
+jsonlite::toJSON(list(
+	value = paste0(as.hexmode(as.integer(cipher)), collapse = ''), 
+	nonce = paste0(as.hexmode(as.integer(nonce)), collapse = '')), auto_unbox = T)
+
+in Ruby:
+input =  '<-- copy & paste from R -->'
+cipher = [JSON.parse(input)["value"]].pack('H*')
+nonce = [JSON.parse(input)["nonce"]].pack('H*')
+keyStr = "secret"
+keyHash = RbNaCl::Hash.sha256(keyStr.force_encoding('ASCII-8BIT'))
+private_key = RbNaCl::PrivateKey.new(keyHash)
+authHash = RbNaCl::Hash.sha256('auth'.force_encoding('ASCII-8BIT'))
+auth_key = RbNaCl::PrivateKey.new(authHash).public_key
+box = RbNaCl::Box.new(auth_key, private_key)
+decrypted_message = box.decrypt(nonce, cipher)
+
+
+erzeuge verschlüsselte Nachricht in Ruby und entschlüssle in R:
+
+in Ruby:
+require 'rbnacl'
+require 'json'
+keyStr = "secret"
+keyHash = RbNaCl::Hash.sha256(keyStr.force_encoding('ASCII-8BIT'))
+unknown_private_key = RbNaCl::PrivateKey.new(keyHash)
+public_key = unknown_private_key.public_key
+authHash = RbNaCl::Hash.sha256('auth'.force_encoding('ASCII-8BIT'))
+auth_key = RbNaCl::PrivateKey.new(authHash)
+box = RbNaCl::Box.new(public_key, auth_key)
+nonce = RbNaCl::Random.random_bytes(box.nonce_bytes)
+message = "hello world"
+msg = message.force_encoding('ASCII-8BIT')
+cipher = box.encrypt(nonce, msg)
+{'value' => cipher.unpack('H*')[0], 'nonce' => nonce.unpack('H*')[0]}.to_json
+
+in R:
+library(sodium)
+input <- { copy & paste from R }
+cipherHex <- jsonlite::fromJSON(input)$value
+nonceHex <- jsonlite::fromJSON(input)$nonce
+keyStr <- 'secret'
+private_key <- sha256(charToRaw(keyStr))
+auth_private_key <- sha256(charToRaw('auth'))
+auth_key <- pubkey(auth_private_key)
+nonce <- as.raw(strtoi(sapply(
+        seq(1, nchar(nonceHex), by=2), 
+        function(x) substr(nonceHex, x, x+1)), 16L))
+cipher <- as.raw(strtoi(sapply(
+        seq(1, nchar(cipherHex), by=2), 
+        function(x) substr(cipherHex, x, x+1)), 16L))
+decrypted_message <- rawToChar(auth_decrypt(cipher, private_key, auth_key, nonce))
+
+
+R sample:
+# erzeuge key
+keyStr <- 'secret'
+private_key <- sodium::sha256(charToRaw(keyStr))
+public_key <- sodium::pubkey(private_key)
+auth_private_key <- sodium::sha256(charToRaw('auth'))
+nonce <- sodium::random(24)
+message <- "{\"address1\":\"M.Scherz-Str 14\",\"city\":\"Bad Vöslau\",\"zipcode\":\"2540\",\"country\":\"Austria\"}"
+msg <- charToRaw(message)
+cipher <- sodium::auth_encrypt(msg, auth_private_key, public_key, nonce)
+jsonlite::toJSON(list(
+        value = paste0(as.hexmode(as.integer(cipher)), collapse = ''), 
+        nonce = paste0(as.hexmode(as.integer(nonce)), collapse = '')), auto_unbox = T)

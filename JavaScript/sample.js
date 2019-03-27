@@ -1,4 +1,4 @@
-# write data
+# write data 
 
 var pia_url = "https://vault.datentresor.org"; # replace with OYD data vault
 var app_key = "eu.ownyourdata.app";            # replace with respective app identifier

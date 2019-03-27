@@ -19,4 +19,4 @@ Wenn du selbst an der App mitentwickeln möchtest, folge diesen Schritten:
 
 ## Lizenz
 
-[MIT Lizenz 2017 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/tutorial/master/LICENSE)
+[MIT Lizenz 2019 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/tutorial/master/LICENSE)

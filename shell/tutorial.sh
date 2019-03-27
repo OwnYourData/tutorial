@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # simple Manifest for tutorial app (encode with https://www.base64encode.org/)
 # {
 #	"name":"Tutorial App",

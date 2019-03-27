@@ -1,4 +1,4 @@
-# last update: 2017-09-10
+# last update: 2019-03-27
 =begin
 Manifest für Beispiel App (encodieren zB mit https://www.base64encode.org/)
 {

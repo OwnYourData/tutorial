@@ -1,4 +1,4 @@
-# OYD R-Tutorial - last update:2016-07-26
+# OYD R-Tutorial - last update:2019-03-27
 # Manifest for sample app ===================================
 '
 {
